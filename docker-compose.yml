@@ -7,17 +7,25 @@ services:
       - ./app/frontend:/app/frontend
       - /app/frontend/node_modules
     ports:
-      - 3000:3000
+      - 3100:3100
     entrypoint: ["pnpm", "dev"]
     tty: true
   backend:
     build: 
       context: ./app/backend
       dockerfile: Dockerfile
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
     volumes:
       - ./app/backend:/app/backend
     ports:
-      - 5000:5000
-      - 5001:5001
-    entrypoint: ["python", "main.py"]
+      - 5100:5100
+      - 5101:5101
+    entrypoint: ["python", "src/main.py"]
     tty: true
