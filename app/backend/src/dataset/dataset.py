@@ -4,9 +4,35 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from utils.logger_config import logger
-from dataset.mp_utils import get_hands_processor
+from dataset.mp_utils import get_hands_processor, get_landmarks_from_img
 from utils.constants import DATASET_DIR, DATASET_FILE, LANDMARKS_PAIRS, LANDMARKS_TRIPLETS, LANDMARKS_TIPS, LANDMARKS_PIPS, current_state, ServerState
 from dataset.features import normalize_landmarks, pairwise_distances, angles, convex_hull_area, hand_orientation_angle, count_extended_fingers, bounding_box_features
+
+def get_sample_from_points(points):
+  points = normalize_landmarks(points)
+  dist_feats = pairwise_distances(points, LANDMARKS_PAIRS)
+  ang_feats = angles(points, LANDMARKS_TRIPLETS)
+  area = convex_hull_area(points)
+  angle = hand_orientation_angle(points)
+  n_extended = count_extended_fingers(points, LANDMARKS_TIPS, LANDMARKS_PIPS)
+  width, height, aspect_ratio = bounding_box_features(points)
+
+  sample = {}
+
+  for i, val in enumerate(dist_feats):
+    sample[f"dist_{i}"] = val
+  
+  for i, val in enumerate(ang_feats):
+    sample[f"ang_{i}"] = val
+
+  sample["area"] = area
+  sample["angle"] = angle
+  sample["width"] = width
+  sample["height"] = height
+  sample["aspect_ratio"] = aspect_ratio
+  sample["n_extended"] = n_extended
+
+  return sample
 
 def create_dataset():
   data = []
@@ -20,47 +46,16 @@ def create_dataset():
 
       img = cv2.imread(image_path)
       img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-      results = hands_processor.process(img_rgb)
+      points = get_landmarks_from_img(hands_processor, img_rgb)
 
-      if not results.multi_hand_landmarks:
-        print(f"Warning: No hand landmarks found in {image_path}. Skipping...")
+      if len(points) == 0:
+        print(f"Warning: No landmarks found in {image_path}. Skipping...")
         continue
 
-      for hand in results.multi_hand_landmarks:
-        h, w, _ = img.shape
-        points = []
-        for lm in hand.landmark:
-          x = lm.x * w
-          y = lm.y * h
-          points.append([x, y])
-        
-        points = np.array(points)
+      sample = get_sample_from_points(points)
+      sample["label"] = label
 
-        points = normalize_landmarks(points)
-
-        dist_feats = pairwise_distances(points, LANDMARKS_PAIRS)
-        ang_feats = angles(points, LANDMARKS_TRIPLETS)
-        area = convex_hull_area(points)
-        angle = hand_orientation_angle(points)
-        n_extended = count_extended_fingers(points, LANDMARKS_TIPS, LANDMARKS_PIPS)
-        width, height, aspect_ratio = bounding_box_features(points)
-
-        sample = { "label": label }
-
-        for i, val in enumerate(dist_feats):
-          sample[f"dist_{i}"] = val
-        
-        for i, val in enumerate(ang_feats):
-          sample[f"ang_{i}"] = val
-
-        sample["area"] = area
-        sample["angle"] = angle
-        sample["width"] = width
-        sample["height"] = height
-        sample["aspect_ratio"] = aspect_ratio
-        sample["n_extended"] = n_extended
-
-        data.append(sample)
+      data.append(sample)
 
   df = pd.DataFrame(data)
   df.to_csv(DATASET_FILE, index=False)
