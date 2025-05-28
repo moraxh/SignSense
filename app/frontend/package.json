@@ -3,13 +3,17 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev --host 0.0.0.0 --port 3000",
+    "dev": "astro dev --host 0.0.0.0 --port 3100",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.8.0"
+    "@iconify-json/lucide": "^1.2.45",
+    "@tailwindcss/vite": "^4.1.7",
+    "astro": "^5.8.0",
+    "astro-icon": "^1.1.5",
+    "tailwindcss": "^4.1.7"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
