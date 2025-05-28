@@ -105,11 +105,13 @@ import { WebSocketManager } from "../lib/webSocketManager";
     }
 
     private showDialog(): void {
+      document.body.style.overflow = "hidden"
       this.dialog.showModal()
       this.dialog.classList.add("show")
     }
 
     public hideDialog(): void {
+      document.body.style.overflow = "auto"
       this.dialog.classList.remove("show")
       setTimeout(() => {
         this.dialog.close()

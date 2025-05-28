@@ -13,3 +13,5 @@ RUN pnpm install
 COPY . .
 
 EXPOSE 3100
+
+CMD ["pnpm", "start"]
