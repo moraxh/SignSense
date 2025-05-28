@@ -1,6 +1,8 @@
 ---
+  import ASLReference from '../components/ASLReference.astro';
   import Hero from '../components/Hero.astro';
   import PredictionSection from '../components/PredictionSection.astro';
+  import ServerStateDialog from '../components/ServerStateDialog.astro';
   import Layout from '../layouts/Layout.astro';
 ---
 
@@ -8,5 +10,7 @@
   <div class="mx-auto max-w-7xl p-4">
     <Hero />
     <PredictionSection />
+    <ServerStateDialog />
+    <ASLReference />
   </div>
 </Layout>

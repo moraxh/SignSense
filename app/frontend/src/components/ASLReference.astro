@@ -1,0 +1,12 @@
+---
+  import { Image } from "astro:assets";
+  import { Icon } from 'astro-icon/components'
+  import ASLReferenceImage from "@assets/asl.png"
+---
+<section class="w-[80%] mx-auto  flex flex-col justify-center items-center border border-text/10 rounded-lg p-6">
+  <h2 class="text-2xl font-poppins font-bold flex gap-3">
+    <Icon name="lucide:hand" class="h-8 w-auto text-secondary" />
+    American Sign Language Reference
+  </h2>
+  <Image class="w-full" src={ASLReferenceImage} alt="ASL Reference Image" />
+</section>

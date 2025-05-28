@@ -1,0 +1,151 @@
+---
+  import Spinner from "./Spinner.astro";
+  import SpinnerFailed from "./SpinnerFailed.astro";
+---
+
+<dialog id="stateDialog" class="bg-transparent backdrop:bg-black/70 border-none outline-none absolute min-w-screen w-screen min-h-screen h-screen text-center z-50 top-0 text-text">
+  <div id="stateVerbose" class="flex flex-col justify-start items-center gap-10 sm:gap-20 py-16 px-5 sm:py-27 sm:px-10 h-full">
+    <section class="flex flex-col justify-center gap-2">
+      <h2 class="text-3xl sm:text-7xl font-bold font-poppins">The model is being trained</h2>
+      <p class="sm:text-3xl opacity-60 font-poppins">Please wait until the process is finished...</p>
+    </section>
+
+    <!-- Spinner -->
+    <section id="spinner" class="flex justify-center items-center h-full w-full">
+      <Spinner />
+    </section>
+  </div>
+
+  <div id="stateFailed" class="flex flex-col justify-start items-center gap-20 py-16 px-5 sm:py-27 sm:px-10 h-full" hidden>
+    <section class="flex flex-col justify-center gap-2">
+      <h2 class="text-5xl sm:text-7xl font-bold font-poppins">Cannot connect to the server</h2>
+      <p class="text-xl sm:text-3xl opacity-60 font-poppins">Retrying the connection...</p>
+    </section>
+
+    <!-- Spinner failed -->
+    <section id="spinner" class="flex justify-center items-center h-full w-full">
+      <SpinnerFailed />
+    </section>
+  </div>
+</dialog>
+</dialog>
+
+
+<style>
+  dialog {
+    transition: all .2s ease-in-out;
+    opacity: 0;
+    scale: .5;
+  }
+
+  dialog.show {
+    opacity: 1;
+    scale: 1;
+  }
+
+  dialog.show[open]::backdrop {
+    animation: backdropBlur .2s ease-in-out forwards;
+    animation-delay: .2s;
+  }
+
+  @keyframes backdropBlur {
+    0% {
+      backdrop-filter: blur(0px);
+    }
+    100% {
+      backdrop-filter: blur(5px);
+    } 
+  }
+
+
+</style>
+
+<script>
+  import { WebSocketManager } from "../lib/webSocketManager";
+
+  class StateDialogManager {
+    private readonly dialog: HTMLDialogElement
+    private readonly verboseSection: HTMLDivElement
+    private readonly failedSection: HTMLDivElement
+    private readonly heading: HTMLHeadingElement
+    private readonly paragraph: HTMLParagraphElement
+
+    constructor(dialogId: string) {
+      this.dialog = document.getElementById(dialogId) as HTMLDialogElement
+
+      if (!this.dialog) {
+        throw new Error(`Dialog with ID ${dialogId} not found`)
+      }
+
+      this.verboseSection = this.dialog.querySelector("#stateVerbose") as HTMLDivElement
+      this.failedSection = this.dialog.querySelector("#stateFailed") as HTMLDivElement
+      this.heading = this.dialog.querySelector("h2") as HTMLHeadingElement
+      this.paragraph = this.dialog.querySelector("p") as HTMLParagraphElement
+
+      this.validateElements()
+    }
+
+    private validateElements(): void {
+      if (!this.verboseSection || !this.failedSection || !this.heading || !this.paragraph) {
+        throw new Error("One or more required elements are missing in the dialog")
+      }
+    }
+
+    public showVerbose(): void {
+      this.verboseSection.hidden = false
+      this.failedSection.hidden = true
+      this.showDialog()
+    }
+
+    public showFailed(): void {
+      this.verboseSection.hidden = true
+      this.failedSection.hidden = false
+      this.showDialog()
+    }
+
+    private showDialog(): void {
+      this.dialog.showModal()
+      this.dialog.classList.add("show")
+    }
+
+    public hideDialog(): void {
+      this.dialog.classList.remove("show")
+      setTimeout(() => {
+        this.dialog.close()
+      }, 200)
+    }
+
+    public updateHeading(text: string): void {
+      this.heading.innerText = text
+    }
+
+    public updateParagraph(text: string): void {
+      this.paragraph.innerText = text
+    }
+  }
+
+  function initializeServerState() {
+    const dialogManager = new StateDialogManager("stateDialog")
+    const webSocket = new WebSocketManager(
+      "ws://localhost:5100",
+      (message) => {
+        if ("state" in message) {
+          const state = message.state
+
+          if (state === "Ready") {
+            dialogManager.hideDialog()
+          } else {
+            dialogManager.showVerbose()
+            dialogManager.updateHeading(state)
+          }
+        }
+      },
+      () => dialogManager.showFailed(),
+      () => dialogManager.showFailed()
+    )
+
+    webSocket.connect()
+  }
+
+  initializeServerState()
+</script>
