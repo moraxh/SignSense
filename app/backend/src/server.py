@@ -86,5 +86,5 @@ async def start_model_info_websocket():
   await server.wait_closed()
 
 async def start_predicting_websocket():
-  server = await websockets.serve(predict_websocket_handler, '0.0.0.0', 5101)
+  server = await websockets.serve(predict_websocket_handler, '0.0.0.0', 5101, max_size=5*1024*1024)  # 10 MB max size
   await server.wait_closed()
