@@ -78,9 +78,9 @@
       </section>
 
       <!-- Detected Word Display -->
-      <p id="detected-word-display" class="bg-text/10 py-3 px-4 text-center rounded-lg text-text font-bold text-lg shadow-sm border-2 border-dashed border-text/10">
-        No word detected yet
-      </p>
+      <input type="text" id="detected-word-display" placeholder="No word detected yet" class="bg-text/10 py-3 px-4 text-center rounded-lg text-text font-bold text-lg shadow-sm border-2 border-dashed border-text/10">
+        
+      </input>
 
       <!-- Clean Word -->
       <button id="detected-word-clear" class="rounded-lg py-2 px-5 bg-text/20 text-lg font-bold text-text/50 flex items-center justify-center gap-2 hover:bg-text/30 hover:cursor-pointer">
@@ -272,13 +272,13 @@
 
   function initializePredictionSignManager() {
     const detectedLetterElement = document.getElementById("detected-letter") as HTMLElement;
-    const detectedWordDisplay = document.getElementById("detected-word-display") as HTMLElement;
+    const detectedWordDisplay = document.getElementById("detected-word-display") as HTMLInputElement;
     const detectedWordClearButton = document.getElementById("detected-word-clear") as HTMLButtonElement;
     const predictedLetters: string[] = []
 
     detectedWordClearButton.addEventListener("click", () => {
       predictedLetters.length = 0;
-      detectedWordDisplay.textContent = "No word detected yet";
+      detectedWordDisplay.value = "";
       detectedLetterElement.textContent = "?";
     });
 
@@ -291,7 +291,7 @@
 
           if (predict != "") {
             predictedLetters.push(predict.toUpperCase())
-            detectedWordDisplay.textContent = processPredictedLetters(predictedLetters);
+            detectedWordDisplay.value = processPredictedLetters(predictedLetters);
           }
         }
       },
