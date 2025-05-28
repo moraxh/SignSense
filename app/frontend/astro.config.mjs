@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 
@@ -10,9 +10,12 @@ export default defineConfig({
     server: {
         watch: { usePolling: true }
     },
-
     plugins: [tailwindcss()],
   },
-
   integrations: [icon()],
+  env: {
+    schema: {
+      BACKEND_URL: envField.string({ context: 'client', access: 'public', default: 'ws://localhost' }),
+    }
+  }
 });

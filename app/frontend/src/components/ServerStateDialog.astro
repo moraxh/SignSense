@@ -61,7 +61,8 @@
 </style>
 
 <script>
-  import { WebSocketManager } from "../lib/webSocketManager";
+  import { BACKEND_URL } from "astro:env/client";
+import { WebSocketManager } from "../lib/webSocketManager";
 
   class StateDialogManager {
     private readonly dialog: HTMLDialogElement
@@ -127,7 +128,7 @@
   function initializeServerState() {
     const dialogManager = new StateDialogManager("stateDialog")
     const webSocket = new WebSocketManager(
-      "ws://localhost:5100",
+      `${BACKEND_URL}:5100`,
       (message) => {
         if ("state" in message) {
           const state = message.state

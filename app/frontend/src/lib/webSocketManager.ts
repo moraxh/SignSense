@@ -19,7 +19,6 @@ export class WebSocketManager {
   }
 
   public connect(): void {
-    console.log(this.serverUrl)
     this.socket = new WebSocket(this.serverUrl)
 
     this.socket.addEventListener("open", () => {

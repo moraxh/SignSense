@@ -92,6 +92,7 @@
 </section>
 
 <script>
+  import { BACKEND_URL } from "astro:env/client";
   import { WebSocketManager } from "../lib/webSocketManager";
 
   class VideoCanvasManager {
@@ -283,7 +284,7 @@
     });
 
     const webSocket = new WebSocketManager(
-      "ws://localhost:5101",
+      `${BACKEND_URL}:5101`,
       (message) => {
         if ("predict" in message) {
           const predict = message["predict"];
