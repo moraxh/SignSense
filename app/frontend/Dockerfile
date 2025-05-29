@@ -14,4 +14,6 @@ COPY . .
 
 EXPOSE 3100
 
-CMD ["pnpm", "start"]
+RUN pnpm build
+
+CMD ["pnpm", "preview"]
