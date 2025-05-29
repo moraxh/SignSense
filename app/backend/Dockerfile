@@ -23,3 +23,5 @@ EXPOSE 5100
 EXPOSE 5101
 
 COPY . .
+
+ENTRYPOINT [ "python", "src/main.py" ]
