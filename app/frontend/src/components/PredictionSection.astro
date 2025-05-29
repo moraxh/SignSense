@@ -2,9 +2,9 @@
   import { Icon } from 'astro-icon/components'
 ---
 
-<section class="grid lg:grid-cols-3 gap-6 mb-6">
+<section class="grid lg:grid-cols-3 gap-6 mb-6 justify-center">
   <!-- Camera -->
-  <section class="lg:col-span-2">
+  <section class="lg:col-span-2 max-w-[80vw]">
     <div class="flex flex-col gap-6 rounded-lg border shadow-sm h-full bg-bg/50 border-text/10 p-6">
       <!-- Title -->
       <section class="flex items-center gap-2 font-poppins text-2xl font-semibold text-text">
@@ -16,7 +16,7 @@
         <!-- Video -->
         <div class="relative aspect-video rounded-lg border border-text/10 overflow-hidden">
           <!-- Video Start Indicator -->
-          <div id="video-start-indicator" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-4 border-dashed border-text/20 w-55 h-55 rounded-lg p-4 flex items-center justify-center text-pretty text-center font-bold text-xl text-text/50">
+          <div id="video-start-indicator" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-4 border-dashed border-text/20 w-40 h-24 sm:w-55 sm:h-55 rounded-lg p-4 flex items-center justify-center text-pretty text-center font-bold text-xs sm:text-xl text-text/50">
             Click the button below to start the camera and begin detection.
           </div>
 
@@ -24,7 +24,7 @@
           <video id="video-preview" class="w-full h-full bg-black rounded-lg object-cover z-10" src="" autoplay muted />
 
           <!-- Video Status -->
-          <span id="video-status" class="*:flex *:items-center *:gap-1.5 bg-bg/50 backdrop-blur-md text-text/70 absolute top-0 left-0 z-20 m-5 text-sm px-4 py-1 rounded-full font-bold">
+          <span id="video-status" class="*:flex *:items-center *:gap-1.5 bg-bg/50 backdrop-blur-md text-text/70 absolute top-0 left-0 z-20 m-2 sm:m-5 text-xs sm:text-sm px-4 py-1 rounded-full font-bold">
             <div class="start" hidden>
               <span class="block w-2.5 h-2.5 rounded-full bg-primary" />
               Recording
@@ -55,7 +55,7 @@
   </section>
 
   <!-- Feedback -->
-  <section class="flex flex-col gap-6">
+  <section class="flex flex-col gap-6 max-w-[80vw]">
     <!-- Detected Letter -->
     <div class="flex flex-col gap-6 rounded-lg border shadow-sm h-full bg-bg/50 border-text/10 p-6">
       <!-- Title -->
