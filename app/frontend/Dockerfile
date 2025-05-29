@@ -16,4 +16,4 @@ EXPOSE 3100
 
 RUN pnpm build
 
-CMD ["pnpm", "preview"]
+ENTRYPOINT ["pnpm", "preview"]
