@@ -10,6 +10,9 @@ export default defineConfig({
     server: {
         watch: { usePolling: true }
     },
+    preview: {
+      allowedHosts: true,
+    },
     plugins: [tailwindcss()],
   },
   integrations: [icon()],
