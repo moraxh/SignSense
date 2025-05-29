@@ -8,7 +8,8 @@ import icon from 'astro-icon';
 export default defineConfig({
   vite: {
     server: {
-        watch: { usePolling: true }
+        watch: { usePolling: true },
+        allowedHosts: true,
     },
     preview: {
       allowedHosts: true,
